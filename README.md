@@ -24,6 +24,13 @@ As for the requirements, we are mainly looking for:
 
 In this position, you will be paid hourly and you will need to submit weekly timesheets (more information on that to come). Please keep consistent track of the hours you spend working on it.
 
+Previous Work
+tested using vzense, raspbian, rpi in lab , check it out.
+password
+camera resolutions, unable to use highest resolution
+power adapter, error persists, could be software issue
+camera lockout possible . needing physical reconnection
+
 
 Network
 
