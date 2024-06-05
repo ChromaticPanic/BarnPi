@@ -75,3 +75,5 @@ node exporter
 cpu
 ram
 uptime
+
+test
