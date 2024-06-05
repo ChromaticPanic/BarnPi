@@ -25,3 +25,53 @@ As for the requirements, we are mainly looking for:
 In this position, you will be paid hourly and you will need to submit weekly timesheets (more information on that to come). Please keep consistent track of the hours you spend working on it.
 
 
+Network
+
+gmail acct
+
+
+Main
+Initial
+etckeeper
+ansible
+docker
+tuptime
+fail2ban
+
+
+ssh create key pair
+ssh copy key
+ssh
+ansible ping
+ansible set timezone
+install avahi-utils
+
+cron job pull rsync
+
+storage
+
+
+Notification 
+- gmail
+- apprise
+- awx
+
+prometheus
+grafana
+
+Rpi
+Initial
+
+passwordless sudo
+create a drive in ram for picture temp storage
+install avahi-daemon
+dynamically set hostname on boot to RPIaxaxaxax mac address
+sudo hostname rpiaxaxaxax
+sudo service avahi-daemon restart
+ssh pubkey auth
+
+
+node exporter
+cpu
+ram
+uptime
