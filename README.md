@@ -31,6 +31,7 @@ camera resolutions, unable to use highest resolution
 power adapter, error persists, could be software issue
 camera lockout possible . needing physical reconnection
 
+Potential issues with usbcable length
 
 Network
 
