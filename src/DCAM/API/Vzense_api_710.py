@@ -9,7 +9,7 @@ class VzenseTofCam():
     session = c_uint(0)
     def __init__(self):
         if platform.system() == 'Linux':
-            libpath = (os.path.abspath(os.path.dirname(os.getcwd()) + os.path.sep + "../"))+"Lib/libvzense_api.so"
+            libpath = (os.path.abspath(os.path.dirname(os.getcwd()) + os.path.sep + "../"))+"/src/DCAM/Lib/libvzense_api.so"
             print(libpath)
             self.ps_cam_lib = cdll.LoadLibrary(libpath)
         elif platform.system() == 'Windows':          
