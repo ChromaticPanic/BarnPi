@@ -1,4 +1,4 @@
-from DCAM710.API.Vzense_define_710 import * 
+from API.Vzense_define_710 import * 
 import sys, os
 import ctypes
 from ctypes import *
