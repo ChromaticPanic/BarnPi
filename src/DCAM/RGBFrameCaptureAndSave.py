@@ -4,6 +4,7 @@ sys.path.append('./')
 
 from API.Vzense_api_710 import *
 import time
+import cv2
 
 camera = VzenseTofCam()
 
@@ -65,8 +66,8 @@ while 1:
         print("Ps2_ReadNextFrame failed:",ret)
         time.sleep(1)
         continue       
-    if  frameready.depth:      
-        ret,frame = camera.Ps2_GetFrame(PsFrameType.PsRGBFrame)
+    if  frameready.rgb:      
+        ret,rgbframe = camera.Ps2_GetFrame(PsFrameType.PsRGBFrame)
 
         curPath = os.getcwd()
         print (curPath)
@@ -76,12 +77,17 @@ while 1:
             os.makedirs(folder)
         else:
             print("already exists")
-        filename = folder + "/depth.bin"
+        filename = folder + "/rgb.bin"
         file = open(filename,"wb+")
-        for i in range(frame.dataLen):
-            file.write(c_uint8(frame.pFrameData[i]))
+        for i in range(rgbframe.dataLen):
+            file.write(c_uint8(rgbframe.pFrameData[i]))
         
         file.close()
+        frametmp = numpy.ctypeslib.as_array(rgbframe.pFrameData, (1, rgbframe.width * rgbframe.height * 3))
+        frametmp.dtype = numpy.uint8
+        frametmp.shape = (rgbframe.height, rgbframe.width,3)
+        cv2.imwrite(folder + "/rgb.png", frametmp)
+
         print("save ok")
         break
 
