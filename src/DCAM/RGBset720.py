@@ -62,8 +62,8 @@ else:
 ret = camera.Ps2_SetDataMode(PsDataMode.PsDepthAndRGB_30)
 if  ret != 0:  
     print("Ps2_SetDataMode failed:",ret)
-
-ret = camera.Ps2_SetRGBResolution(PsResolution.PsRGB_Resolution_1920_1080)
+    
+ret = camera.Ps2_SetRGBResolution(PsResolution.PsRGB_Resolution_1280_720)
 if  ret != 0:  
     print("Ps2_SetRGBResolution failed:",ret)
  
@@ -77,13 +77,12 @@ for i in range(30):
     if  frameready.rgb:      
         ret,frame = camera.Ps2_GetFrame(PsFrameType.PsRGBFrame)
         if  ret == 0:
-            if frame.width == 1920 and frame.height == 1080:
+            if frame.width == 1280 and frame.height == 720:
                 print("rgb  id:",frame.frameIndex)
             else:
                 print("rgb width ",frame.width,"  height ",frame.height)      
         else:   
             print("rgb  error:",ret)
-
 
 ret = camera.Ps2_StopStream()       
 if  ret == 0:

@@ -84,28 +84,6 @@ for i in range(30):
         else:   
             print("rgb  error:",ret)
 
-# ret = camera.Ps2_SetRGBResolution(PsResolution.PsRGB_Resolution_1920_1080)
-# if  ret != 0:  
-#     print("Ps2_SetRGBResolution failed:",ret)
- 
-# for i in range(30):
-#     ret, frameready = camera.Ps2_ReadNextFrame()
-#     if  ret !=0:
-#         print("Ps2_ReadNextFrame failed:",ret)
-#         #time.sleep(1)
-#         continue       
-    
-#     if  frameready.rgb:      
-#         ret,frame = camera.Ps2_GetFrame(PsFrameType.PsRGBFrame)
-#         if  ret == 0:
-#             if frame.width == 1920 and frame.height == 1080:
-#                 print("rgb  id:",frame.frameIndex)
-#             else:
-#                 print("rgb width ",frame.width,"  height ",frame.height)      
-#         else:   
-#             print("rgb  error:",ret)
-
-
 ret = camera.Ps2_StopStream()       
 if  ret == 0:
     print("stop stream successful")
