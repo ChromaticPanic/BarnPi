@@ -59,7 +59,7 @@ if  ret == 0:
 else:
     print("Ps2_StartStream failed:",ret)     
 
-ret = camera.Ps2_SetDataMode(PsDataMode.PsDepthAndRGB_30)
+ret = camera.Ps2_SetDataMode(PsDataMode.PsDepthAndIR_15_RGB_30)
 if  ret != 0:  
     print("Ps2_SetDataMode failed:",ret)
     
