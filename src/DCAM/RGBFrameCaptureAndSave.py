@@ -209,16 +209,16 @@ def main():
     camera = VzenseTofCam()
     if camera_init(camera):
         save_frames(CaptureModel(**{
-            camera: camera,
-            hostname: hostname,
-            rgb_path: rgb_path,
-            depth_path: depth_path,
-            ir_path: ir_path,
-            log_path: log_path,
-            collect_rgb: collect_rgb,
-            collect_depth: collect_depth,
-            collect_ir: collect_ir,
-            capture_delay: capture_delay,
+            'camera': camera,
+            'hostname': hostname,
+            'rgb_path': rgb_path,
+            'depth_path': depth_path,
+            'ir_path': ir_path,
+            'log_path': log_path,
+            'collect_rgb': collect_rgb,
+            'collect_depth': collect_depth,
+            'collect_ir': collect_ir,
+            'capture_delay': capture_delay,
         }))
         camera_close(camera)
     else:
