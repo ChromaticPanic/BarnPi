@@ -67,7 +67,7 @@ ret = camera.Ps2_SetRGBResolution(PsResolution.PsRGB_Resolution_640_480)
 if  ret != 0:  
     print("Ps2_SetRGBResolution failed:",ret)
  
-for i in range(30):
+for i in range(5):
     ret, frameready = camera.Ps2_ReadNextFrame()
     if  ret !=0:
         print("Ps2_ReadNextFrame failed:",ret)

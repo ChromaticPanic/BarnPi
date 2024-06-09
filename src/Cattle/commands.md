@@ -1,25 +1,25 @@
 sudo apt update && sudo apt upgrade -y 
 sudo shutdown -r now 
 
-sudo apt install etckeeper tuptime
-mkdir project
-git clone therepo
+sudo apt install -y etckeeper
+sudo apt install -y tuptime avahi-daemon v4l-utils python3.12-venv
 
-sudo apt install -y v4l-utils
+sudo mkdir /mnt/ramdisk
+sudo chown cowmain /mnt/ramdisk
+
 v4l2-ctl --list-devices
 
-sudo apt install -y python3.12-venv
-python -m venv BarnPi/src/DCAM
+mkdir project
+cd project
+git clone therepo
+cd BarnPi
+
+python -m venv src/DCAM
 
 source bin/activate
-touch BarnPi/src/DCAM/requirements.txt
-echo "numpy" > BarnPi/src/DCAM/requirements.txt
-echo "opencv-python-headless" > BarnPi/src/DCAM/requirements.txt
 
 pip install -r requirements.txt
 python install.py
-
-/pull repo
 
 /set perms
 sudo chmod 744 /home/cowmain/project/BarnPi/src/Cattle/cattle_startup.sh
@@ -27,6 +27,8 @@ sudo cp /home/cowmain/project/BarnPi/src/Cattle/startup.sh /usr/local/bin/cattle
 sudo chmod 664 /home/cowmain/project/BarnPi/src/Cattle/cattle_startup.service
 sudo cp /home/cowmain/project/BarnPi/src/Cattle/cattle_startup.service /etc/systemd/system/cattle_startup.service
 sudo systemctl daemon-reload
-sudo systemctl enable disk-space-check.service
+sudo systemctl enable cattle_startup.service
 
-sudo apt install -y avahi-daemon
+reboot
+
+hostname_YYYYMMDD_HHMMSS_channel
