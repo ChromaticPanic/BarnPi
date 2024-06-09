@@ -59,7 +59,7 @@ class CaptureModel:
         collect_rgb: bool,
         collect_depth: bool,
         collect_ir: bool,
-        capture_delay: int,
+        capture_delay: float,
     ):
         self.hostname = hostname
         self.camera = camera
@@ -75,7 +75,7 @@ class CaptureModel:
 
 def save_frames(config: CaptureModel):
     time_curr = get_current_time()  # get current time in milliseconds
-    time_delay = 10000  # 10 seconds
+    time_delay = int(config.capture_delay * 1000)  # convert seconds to milliseconds
     time_last = time_curr + time_delay + 1
     retries = 10
 
@@ -200,7 +200,7 @@ def main():
     depth_path = cache_dir + "/" + data_dir + "/" + depth_dir
     ir_path = cache_dir + "/" + data_dir + "/" + ir_dir
     log_path = cache_dir + "/" + log_dir
-    capture_delay = int(os.getenv("CAPTURE_DELAY"))
+    capture_delay = float(os.getenv("CAPTURE_DELAY_SECONDS"))
     collect_rgb = bool(os.getenv("COLLECT_RGB"))
     collect_depth = bool(os.getenv("COLLECT_DEPTH"))
     collect_ir = bool(os.getenv("COLLECT_IR"))
