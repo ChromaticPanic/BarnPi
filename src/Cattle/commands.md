@@ -28,3 +28,5 @@ sudo chmod 664 /home/cowmain/project/BarnPi/src/Cattle/cattle_startup.service
 sudo cp /home/cowmain/project/BarnPi/src/Cattle/cattle_startup.service /etc/systemd/system/cattle_startup.service
 sudo systemctl daemon-reload
 sudo systemctl enable disk-space-check.service
+
+sudo apt install -y avahi-daemon

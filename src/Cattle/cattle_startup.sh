@@ -20,7 +20,7 @@ echo "$UNIQUE_HOSTNAME" > "/etc/hostname"
 # set hostname in /etc/hosts
 sed  "s/127.0.1.1.*$CURRENT_HOSTNAME/127.0.1.1\t$UNIQUE_HOSTNAME/g" /etc/hosts
 
-service avaahi-daemon restart
+service avahi-daemon restart
 
 CURRENT_HOSTNAME=$(cat /proc/sys/kernel/hostname)
 echo "mdns hostname: $CURRENT_HOSTNAME"
