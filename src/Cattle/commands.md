@@ -18,3 +18,13 @@ echo "opencv-python-headless" > BarnPi/src/DCAM/requirements.txt
 
 pip install -r requirements.txt
 python install.py
+
+/pull repo
+
+/set perms
+sudo chmod 744 /home/cowmain/project/BarnPi/src/Cattle/startup.sh
+sudo cp /home/cowmain/project/BarnPi/src/Cattle/startup.sh /usr/local/bin/cattle_startup.sh
+sudo chmod 664 /home/cowmain/project/BarnPi/src/Cattle/cattle_startup.service
+sudo cp /home/cowmain/project/BarnPi/src/Cattle/cattle_startup.service /etc/systemd/system/cattle_startup.service
+sudo systemctl daemon-reload
+sudo systemctl enable disk-space-check.service

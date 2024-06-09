@@ -2,7 +2,7 @@
 After=network.target
 
 [Service]
-ExecStart=/home/cowmain/project/BarnPi/src/Cattle/startup.sh
+ExecStart=/usr/local/bin/cattle_startup.sh
 
 [Install]
 WantedBy=default.target
