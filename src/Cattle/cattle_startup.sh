@@ -14,6 +14,7 @@ echo "Unique Hostname: $UNIQUE_HOSTNAME"
 CURRENT_HOSTNAME=$(cat /proc/sys/kernel/hostname)
 
 # set hostname
+hostname "$UNIQUE_HOSTNAME"
 echo "$UNIQUE_HOSTNAME" > "/etc/hostname"
 
 # set hostname in /etc/hosts
