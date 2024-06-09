@@ -111,7 +111,7 @@ def save_frames(config: CaptureModel):
             break
 
 
-def camera_init(camera: str) -> bool:
+def camera_init(camera: str) -> VzenseTofCam | bool:
     camera_count = camera.Ps2_GetDeviceCount()
     retry_count = 20
     while camera_count == 0 and retry_count > 0:
@@ -167,7 +167,7 @@ def camera_init(camera: str) -> bool:
         print("Ps2_StartStream failed:", ret)
         return FALSE
 
-    return TRUE
+    return camera
 
 
 def camera_close(camera: str) -> bool:
@@ -206,8 +206,8 @@ def main():
     collect_ir = bool(os.getenv("COLLECT_IR"))
     hostname = socket.gethostname()
 
-    camera = VzenseTofCam()
-    if camera_init(camera):
+    camera = camera_init(VzenseTofCam())
+    if camera:
         save_frames(CaptureModel(**{
             'camera': camera,
             'hostname': hostname,
