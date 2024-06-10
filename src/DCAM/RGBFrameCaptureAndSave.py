@@ -99,7 +99,8 @@ def save_frames(config: CaptureModel):
         frameready = read_next_frame(config.camera, retries)
 
         if config.collect_rgb:
-            if not frameready.rgb:
+            while not frameready.rgb:
+                print("retrying to get rgb frame")
                 frameready = read_next_frame(config.camera, retries)
             # time YYYYMMDD_HHMMSS
             str_time = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -109,12 +110,6 @@ def save_frames(config: CaptureModel):
 
             print("getting rgb frame")
             ret, rgbframe = config.camera.Ps2_GetFrame(PsFrameType.PsRGBFrame)
-            retry_count = 10
-            while ret != 0 and retry_count > 0:
-                ret, rgbframe = config.camera.Ps2_GetFrame(PsFrameType.PsRGBFrame)
-                retry_count -= 1
-                time.sleep(0.2)
-                print("retrying to get rgb frame")
 
             filename = config.rgb_path + f"/{prefix}rgb.bin"
             file = open(filename, "wb+")
@@ -132,8 +127,31 @@ def save_frames(config: CaptureModel):
 
             print("rgb save ok")
 
+        if config.collect_ir:
+            while not frameready.ir:
+                print("retrying to get ir frame")
+                frameready = read_next_frame(config.camera, retries)
+            # time YYYYMMDD_HHMMSS
+            str_time = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+            prefix = config.hostname + "_" + str_time + "_"
+            print(prefix)
+            time_last = time_curr
+
+            print("getting ir frame")
+            ret, irframe = config.camera.Ps2_GetFrame(PsFrameType.PsIRFrame)
+
+            filename = config.ir_path + f"/{prefix}ir.bin"
+            file = open(filename, "wb+")
+            for i in range(irframe.dataLen):
+                file.write(c_uint8(irframe.pFrameData[i]))
+
+            file.close()
+
+            print("ir save ok")
+
         if config.collect_depth:
             while not frameready.depth:
+                print("retrying to get depth frame")
                 frameready = read_next_frame(config.camera, retries)
             # time YYYYMMDD_HHMMSS
             str_time = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -143,12 +161,6 @@ def save_frames(config: CaptureModel):
 
             print("getting depth frame")
             ret, depthframe = config.camera.Ps2_GetFrame(PsFrameType.PsDepthFrame)
-            retry_count = 10
-            while ret != 0 and retry_count > 0:
-                ret, depthframe = config.camera.Ps2_GetFrame(PsFrameType.PsDepthFrame)
-                retry_count -= 1
-                time.sleep(0.2)
-                print("retrying to get depth frame")
 
             filename = config.depth_path + f"/{prefix}depth.bin"
             file = open(filename, "wb+")
@@ -178,33 +190,6 @@ def save_frames(config: CaptureModel):
                 print("Ps2_ConvertDepthFrameToWorldVector failed:", ret)
 
             print("depth save ok")
-
-        if config.collect_ir:
-            if not frameready.ir:
-                frameready = read_next_frame(config.camera, retries)
-            # time YYYYMMDD_HHMMSS
-            str_time = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-            prefix = config.hostname + "_" + str_time + "_"
-            print(prefix)
-            time_last = time_curr
-
-            print("getting ir frame")
-            ret, irframe = config.camera.Ps2_GetFrame(PsFrameType.PsIRFrame)
-            retry_count = 10
-            while ret != 0 and retry_count > 0:
-                ret, irframe = config.camera.Ps2_GetFrame(PsFrameType.PsIRFrame)
-                retry_count -= 1
-                time.sleep(0.2)
-                print("retrying to get ir frame")
-
-            filename = config.ir_path + f"/{prefix}ir.bin"
-            file = open(filename, "wb+")
-            for i in range(irframe.dataLen):
-                file.write(c_uint8(irframe.pFrameData[i]))
-
-            file.close()
-
-            print("ir save ok")
 
         if run_once:
             break
