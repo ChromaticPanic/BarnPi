@@ -85,6 +85,7 @@ def save_frames(config: CaptureModel):
 
     while time_curr - time_last < time_delay and retries > 0:
         time_curr = get_current_time()
+        print("time_curr: ", time_curr)
         prefix = config.hostname + "_" + str(time_curr)
 
         ret, frameready = config.camera.Ps2_ReadNextFrame()
@@ -95,10 +96,8 @@ def save_frames(config: CaptureModel):
             retries -= 1
             continue
 
-        if config.collect_rgb or config.collect_depth or config.collect_ir:
+        if config.collect_rgb and (config.collect_rgb != rgb_saved) and frameready.rgb:
             time_last = time_curr
-
-        if config.collect_rgb and (not rgb_saved) and frameready.rgb:
             ret, rgbframe = config.camera.Ps2_GetFrame(PsFrameType.PsRGBFrame)
 
             filename = config.rgb_path + "/rgb.bin"
@@ -118,7 +117,8 @@ def save_frames(config: CaptureModel):
 
             print("rgb save ok")
 
-        if config.collect_depth and (not depth_saved) and frameready.depth:
+        if config.collect_depth and (config.collect_depth != depth_saved) and frameready.depth:
+            time_last = time_curr
             ret, depthframe = config.camera.Ps2_GetFrame(PsFrameType.PsDepthFrame)
 
             filename = config.depth_path + "/depth.bin"
@@ -145,7 +145,8 @@ def save_frames(config: CaptureModel):
 
             print("depth save ok")
 
-        if config.collect_ir and (not ir_saved) and frameready.ir:
+        if config.collect_ir and (config.collect_ir != ir_saved) and frameready.ir:
+            time_last = time_curr
             ret, irframe = config.camera.Ps2_GetFrame(PsFrameType.PsIRFrame)
 
             filename = config.ir_path + "/ir.bin"
