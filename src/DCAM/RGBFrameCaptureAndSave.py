@@ -5,7 +5,8 @@ sys.path.append("./")
 
 from API.Vzense_api_710 import *
 import time
-import datetime
+from datetime import datetime as dt
+
 import os
 import cv2
 import dotenv
@@ -43,7 +44,8 @@ def assert_required_folders(
 
 def get_current_time():
     return round(
-        datetime.datetime.now(datetime.UTC).timestamp() * 1000
+        # dt.now(datetime.UTC).timestamp() * 1000
+        dt.now(tz="America/Winnipeg").timestamp() * 1000
     )  # get current time in milliseconds
 
 
@@ -59,6 +61,7 @@ class CaptureModel:
         collect_rgb: bool,
         collect_depth: bool,
         collect_ir: bool,
+        collect_point_cloud: bool,
         capture_delay: float,
     ):
         self.hostname = hostname
@@ -70,8 +73,14 @@ class CaptureModel:
         self.collect_rgb = collect_rgb
         self.collect_depth = collect_depth
         self.collect_ir = collect_ir
+        self.collect_point_cloud = collect_point_cloud
         self.capture_delay = capture_delay
 
+def get_time_str():
+    return dt.now(tz="America/Winnipeg").strftime("%Y%m%d_%H%M%S")
+
+def get_prefix(hostname: str) -> str:
+    return hostname + "_" + get_time_str() + "_"
 
 def read_next_frame(camera: VzenseTofCam, retries: int = 10):
     ret, frameready = camera.Ps2_ReadNextFrame()
@@ -95,17 +104,14 @@ def save_frames(config: CaptureModel):
 
     while time_curr - time_last < time_delay and retries > 0:
         time_curr = get_current_time()
-
+        print(f"{get_time_str()}: Collecting frames")
         frameready = read_next_frame(config.camera, retries)
 
         if config.collect_rgb:
             while not frameready.rgb:
                 print("retrying to get rgb frame")
                 frameready = read_next_frame(config.camera, retries)
-            # time YYYYMMDD_HHMMSS
-            str_time = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-            prefix = config.hostname + "_" + str_time + "_"
-            print(prefix)
+            prefix = get_prefix(config.hostname)
             time_last = time_curr
 
             print("getting rgb frame")
@@ -131,10 +137,7 @@ def save_frames(config: CaptureModel):
             while not frameready.ir:
                 print("retrying to get ir frame")
                 frameready = read_next_frame(config.camera, retries)
-            # time YYYYMMDD_HHMMSS
-            str_time = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-            prefix = config.hostname + "_" + str_time + "_"
-            print(prefix)
+            prefix = get_prefix(config.hostname)
             time_last = time_curr
 
             print("getting ir frame")
@@ -153,10 +156,7 @@ def save_frames(config: CaptureModel):
             while not frameready.depth:
                 print("retrying to get depth frame")
                 frameready = read_next_frame(config.camera, retries)
-            # time YYYYMMDD_HHMMSS
-            str_time = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-            prefix = config.hostname + "_" + str_time + "_"
-            print(prefix)
+            prefix = get_prefix(config.hostname)
             time_last = time_curr
 
             print("getting depth frame")
@@ -168,28 +168,28 @@ def save_frames(config: CaptureModel):
                 file.write(c_uint8(depthframe.pFrameData[i]))
 
             file.close()
-            ret, pointlist = config.camera.Ps2_ConvertDepthFrameToWorldVector(
-                depthframe
-            )
-            if ret == 0:
-
-                filename = config.depth_path + "/point.txt"
-                file = open(filename, "w")
-
-                for i in range(depthframe.width * depthframe.height):
-                    if pointlist[i].z != 0 and pointlist[i].z != 65535:
-                        file.write(
-                            "{0},{1},{2}\n".format(
-                                pointlist[i].x, pointlist[i].y, pointlist[i].z
-                            )
-                        )
-
-                file.close()
-                print("point cloud save ok")
-            else:
-                print("Ps2_ConvertDepthFrameToWorldVector failed:", ret)
-
             print("depth save ok")
+            if config.collect_point_cloud:
+                ret, pointlist = config.camera.Ps2_ConvertDepthFrameToWorldVector(
+                    depthframe
+                )
+                if ret == 0:
+
+                    filename = config.depth_path + f"/{prefix}point_cloud.txt"
+                    file = open(filename, "w")
+
+                    for i in range(depthframe.width * depthframe.height):
+                        if pointlist[i].z != 0 and pointlist[i].z != 65535:
+                            file.write(
+                                "{0},{1},{2}\n".format(
+                                    pointlist[i].x, pointlist[i].y, pointlist[i].z
+                                )
+                            )
+
+                    file.close()
+                    print("point cloud save ok")
+                else:
+                    print("Ps2_ConvertDepthFrameToWorldVector failed:", ret)
 
         if run_once:
             break
@@ -288,6 +288,7 @@ def main():
     collect_rgb = bool(os.getenv("COLLECT_RGB"))
     collect_depth = bool(os.getenv("COLLECT_DEPTH"))
     collect_ir = bool(os.getenv("COLLECT_IR"))
+    collect_point_cloud = bool(os.getenv("COLLECT_POINT_CLOUD"))
     hostname = socket.gethostname()
 
     camera = camera_init(VzenseTofCam())
@@ -304,6 +305,7 @@ def main():
                     "collect_rgb": collect_rgb,
                     "collect_depth": collect_depth,
                     "collect_ir": collect_ir,
+                    "collect_point_cloud": collect_point_cloud,
                     "capture_delay": capture_delay,
                 }
             )
