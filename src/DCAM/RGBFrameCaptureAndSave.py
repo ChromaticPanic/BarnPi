@@ -100,7 +100,7 @@ def save_frames(config: CaptureModel):
     loops = 5
     time_curr = get_current_time()  # get current time in milliseconds
     time_delay = int(config.capture_delay * 1000)  # convert seconds to milliseconds
-    time_last = time_curr + time_delay + 1
+    time_last = time_curr - time_delay - 1
     retries = 10
 
     while loops != 0:
@@ -194,7 +194,7 @@ def save_frames(config: CaptureModel):
                         print("Ps2_ConvertDepthFrameToWorldVector failed:", ret)
 
             loops -= 1
-            time_curr = get_current_time()
+        time_curr = get_current_time()
 
 
 def camera_init(camera: str) -> VzenseTofCam:
