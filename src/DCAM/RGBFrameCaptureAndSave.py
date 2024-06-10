@@ -127,20 +127,20 @@ def save_frames(config: CaptureModel):
                 file.write(c_uint8(depthframe.pFrameData[i]))
 
             file.close()
-            ret, pointlist = config.camera.Ps2_ConvertDepthFrameToWorldVector(depthframe)
-            if  ret == 0:
+            # ret, pointlist = config.camera.Ps2_ConvertDepthFrameToWorldVector(depthframe)
+            # if  ret == 0:
 
-                filename = config.depth_path + "/point.txt"
-                file = open(filename,"w")
+            #     filename = config.depth_path + "/point.txt"
+            #     file = open(filename,"w")
 
-                for i in range(depthframe.width*depthframe.height):
-                    if pointlist[i].z!=0 and pointlist[i].z!=65535:
-                        file.write("{0},{1},{2}\n".format(pointlist[i].x,pointlist[i].y,pointlist[i].z))
+            #     for i in range(depthframe.width*depthframe.height):
+            #         if pointlist[i].z!=0 and pointlist[i].z!=65535:
+            #             file.write("{0},{1},{2}\n".format(pointlist[i].x,pointlist[i].y,pointlist[i].z))
 
-                file.close()
-                print("point cloud save ok")
-            else:
-                print("Ps2_ConvertDepthFrameToWorldVector failed:",ret)
+            #     file.close()
+            #     print("point cloud save ok")
+            # else:
+            #     print("Ps2_ConvertDepthFrameToWorldVector failed:",ret)
             depth_saved = TRUE
 
             print("depth save ok")
