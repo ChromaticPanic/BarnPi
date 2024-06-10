@@ -86,7 +86,7 @@ def save_frames(config: CaptureModel):
     while time_curr - time_last < time_delay and retries > 0:
         time_curr = get_current_time()
         # time YYYYMMDD_HHMMSS
-        str_time = datetime.datetime(time_curr // 1000).strftime("%Y%m%d_%H%M%S")
+        str_time = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
         prefix = config.hostname + "_" + str_time + "_"
         print(prefix)
 
