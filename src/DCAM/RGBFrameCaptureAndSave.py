@@ -79,9 +79,9 @@ def save_frames(config: CaptureModel):
     time_delay = int(config.capture_delay * 1000)  # convert seconds to milliseconds
     time_last = time_curr + time_delay + 1
     retries = 10
-    rgb_saved = FALSE
-    depth_saved = FALSE
-    ir_saved = FALSE
+    # rgb_saved = FALSE
+    # depth_saved = FALSE
+    # ir_saved = FALSE
 
     while time_curr - time_last < time_delay and retries > 0:
         time_curr = get_current_time()
@@ -94,13 +94,21 @@ def save_frames(config: CaptureModel):
             retries -= 1
         else:
 
-            if config.collect_rgb and not rgb_saved and frameready.rgb:
+            if config.collect_rgb and frameready.rgb:
                 # time YYYYMMDD_HHMMSS
                 str_time = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
                 prefix = config.hostname + "_" + str_time + "_"
                 print(prefix)
                 time_last = time_curr
+
+                print("getting rgb frame")
                 ret, rgbframe = config.camera.Ps2_GetFrame(PsFrameType.PsRGBFrame)
+                retry_count = 10
+                while ret != 0 and retry_count > 0:
+                    ret, rgbframe = config.camera.Ps2_GetFrame(PsFrameType.PsRGBFrame)
+                    retry_count -= 1
+                    time.sleep(1)
+                    print("retrying to get rgb frame")
 
                 filename = config.rgb_path + f'/{prefix}rgb.bin'
                 file = open(filename, "wb+")
@@ -115,17 +123,24 @@ def save_frames(config: CaptureModel):
                 frametmp.shape = (rgbframe.height, rgbframe.width, 3)
                 cv2.imwrite(config.rgb_path + f'/{prefix}rgb.png', frametmp)
                 cv2.imwrite(config.rgb_path + f'/{prefix}rgb.jpg', frametmp)
-                rgb_saved = TRUE
 
                 print("rgb save ok")
 
-            if config.collect_depth and not depth_saved and frameready.depth:
+            if config.collect_depth and frameready.depth:
                 # time YYYYMMDD_HHMMSS
                 str_time = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
                 prefix = config.hostname + "_" + str_time + "_"
                 print(prefix)
                 time_last = time_curr
+
+                print("getting depth frame")
                 ret, depthframe = config.camera.Ps2_GetFrame(PsFrameType.PsDepthFrame)
+                retry_count = 10
+                while ret != 0 and retry_count > 0:
+                    ret, depthframe = config.camera.Ps2_GetFrame(PsFrameType.PsDepthFrame)
+                    retry_count -= 1
+                    time.sleep(1)
+                    print("retrying to get depth frame")
 
                 filename = config.depth_path + f'/{prefix}depth.bin'
                 file = open(filename, "wb+")
@@ -147,17 +162,24 @@ def save_frames(config: CaptureModel):
                 #     print("point cloud save ok")
                 # else:
                 #     print("Ps2_ConvertDepthFrameToWorldVector failed:",ret)
-                depth_saved = TRUE
 
                 print("depth save ok")
 
-            if config.collect_ir and not ir_saved and frameready.ir:
+            if config.collect_ir and frameready.ir:
                 # time YYYYMMDD_HHMMSS
                 str_time = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
                 prefix = config.hostname + "_" + str_time + "_"
                 print(prefix)
                 time_last = time_curr
+
+                print("getting ir frame")
                 ret, irframe = config.camera.Ps2_GetFrame(PsFrameType.PsIRFrame)
+                retry_count = 10
+                while ret != 0 and retry_count > 0:
+                    ret, irframe = config.camera.Ps2_GetFrame(PsFrameType.PsIRFrame)
+                    retry_count -= 1
+                    time.sleep(1)
+                    print("retrying to get ir frame")
 
                 filename = config.ir_path + f'/{prefix}ir.bin'
                 file = open(filename, "wb+")
@@ -165,17 +187,12 @@ def save_frames(config: CaptureModel):
                     file.write(c_uint8(irframe.pFrameData[i]))
 
                 file.close()
-                ir_saved = TRUE
 
                 print("ir save ok")
 
-            if config.collect_rgb == rgb_saved and config.collect_depth == depth_saved and config.collect_ir == ir_saved:
-                rgb_saved = FALSE
-                depth_saved = FALSE
-                ir_saved = FALSE
 
-                if run_once:
-                    break
+            if run_once:
+                break
             
 
 
