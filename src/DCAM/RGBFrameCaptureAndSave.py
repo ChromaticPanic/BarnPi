@@ -85,8 +85,10 @@ def save_frames(config: CaptureModel):
 
     while time_curr - time_last < time_delay and retries > 0:
         time_curr = get_current_time()
-        print("time_curr: ", time_curr)
-        prefix = config.hostname + "_" + str(time_curr)
+        # time YYYYMMDD_HHMMSS
+        str_time = datetime.datetime(time_curr).strftime("%Y%m%d_%H%M%S")
+        prefix = config.hostname + "_" + str_time + "_"
+        print(prefix)
 
         ret, frameready = config.camera.Ps2_ReadNextFrame()
         if ret != 0:
@@ -100,7 +102,7 @@ def save_frames(config: CaptureModel):
             time_last = time_curr
             ret, rgbframe = config.camera.Ps2_GetFrame(PsFrameType.PsRGBFrame)
 
-            filename = config.rgb_path + "/rgb.bin"
+            filename = config.rgb_path + f'/{prefix}rgb.bin'
             file = open(filename, "wb+")
             for i in range(rgbframe.dataLen):
                 file.write(c_uint8(rgbframe.pFrameData[i]))
@@ -111,8 +113,8 @@ def save_frames(config: CaptureModel):
             )
             frametmp.dtype = numpy.uint8
             frametmp.shape = (rgbframe.height, rgbframe.width, 3)
-            cv2.imwrite(config.rgb_path + "/rgb.png", frametmp)
-            cv2.imwrite(config.rgb_path + "/rgb.jpg", frametmp)
+            cv2.imwrite(config.rgb_path + f'/{prefix}rgb.png', frametmp)
+            cv2.imwrite(config.rgb_path + f'/{prefix}rgb.jpg', frametmp)
             rgb_saved = TRUE
 
             print("rgb save ok")
@@ -121,7 +123,7 @@ def save_frames(config: CaptureModel):
             time_last = time_curr
             ret, depthframe = config.camera.Ps2_GetFrame(PsFrameType.PsDepthFrame)
 
-            filename = config.depth_path + "/depth.bin"
+            filename = config.depth_path + f'/{prefix}depth.bin'
             file = open(filename, "wb+")
             for i in range(depthframe.dataLen):
                 file.write(c_uint8(depthframe.pFrameData[i]))
@@ -149,7 +151,7 @@ def save_frames(config: CaptureModel):
             time_last = time_curr
             ret, irframe = config.camera.Ps2_GetFrame(PsFrameType.PsIRFrame)
 
-            filename = config.ir_path + "/ir.bin"
+            filename = config.ir_path + f'/{prefix}ir.bin'
             file = open(filename, "wb+")
             for i in range(irframe.dataLen):
                 file.write(c_uint8(irframe.pFrameData[i]))
