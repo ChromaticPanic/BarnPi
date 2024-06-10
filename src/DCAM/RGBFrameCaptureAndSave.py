@@ -103,97 +103,98 @@ def save_frames(config: CaptureModel):
     time_last = time_curr + time_delay + 1
     retries = 10
 
-    while time_curr - time_last > time_delay and retries > 0 and loops != 0:
-        time_curr = get_current_time()
-        print(f"{get_time_str()}: Collecting frames")
-        frameready = read_next_frame(config.camera, retries)
+    while loops != 0:
+        if time_curr - time_last > time_delay:
+            time_curr = get_current_time()
+            print(f"{get_time_str()}: Collecting frames")
+            frameready = read_next_frame(config.camera, retries)
 
-        if config.collect_rgb:
-            while not frameready.rgb:
-                print("retrying to get rgb frame")
-                frameready = read_next_frame(config.camera, retries)
-            prefix = get_prefix(config.hostname)
-            time_last = time_curr
+            if config.collect_rgb:
+                while not frameready.rgb:
+                    print("retrying to get rgb frame")
+                    frameready = read_next_frame(config.camera, retries)
+                prefix = get_prefix(config.hostname)
+                time_last = time_curr
 
-            print("getting rgb frame")
-            ret, rgbframe = config.camera.Ps2_GetFrame(PsFrameType.PsRGBFrame)
+                print("getting rgb frame")
+                ret, rgbframe = config.camera.Ps2_GetFrame(PsFrameType.PsRGBFrame)
 
-            filename = config.rgb_path + f"/{prefix}rgb.bin"
-            file = open(filename, "wb+")
-            for i in range(rgbframe.dataLen):
-                file.write(c_uint8(rgbframe.pFrameData[i]))
+                filename = config.rgb_path + f"/{prefix}rgb.bin"
+                file = open(filename, "wb+")
+                for i in range(rgbframe.dataLen):
+                    file.write(c_uint8(rgbframe.pFrameData[i]))
 
-            file.close()
-            frametmp = numpy.ctypeslib.as_array(
-                rgbframe.pFrameData, (1, rgbframe.width * rgbframe.height * 3)
-            )
-            frametmp.dtype = numpy.uint8
-            frametmp.shape = (rgbframe.height, rgbframe.width, 3)
-            cv2.imwrite(config.rgb_path + f"/{prefix}rgb.png", frametmp)
-            cv2.imwrite(config.rgb_path + f"/{prefix}rgb.jpg", frametmp)
-
-            print("rgb save ok")
-
-        if config.collect_ir:
-            while not frameready.ir:
-                print("retrying to get ir frame")
-                frameready = read_next_frame(config.camera, retries)
-            prefix = get_prefix(config.hostname)
-            time_last = time_curr
-
-            print("getting ir frame")
-            ret, irframe = config.camera.Ps2_GetFrame(PsFrameType.PsIRFrame)
-
-            filename = config.ir_path + f"/{prefix}ir.bin"
-            file = open(filename, "wb+")
-            for i in range(irframe.dataLen):
-                file.write(c_uint8(irframe.pFrameData[i]))
-
-            file.close()
-
-            print("ir save ok")
-
-        if config.collect_depth:
-            while not frameready.depth:
-                print("retrying to get depth frame")
-                frameready = read_next_frame(config.camera, retries)
-            prefix = get_prefix(config.hostname)
-            time_last = time_curr
-
-            print("getting depth frame")
-            ret, depthframe = config.camera.Ps2_GetFrame(PsFrameType.PsDepthFrame)
-
-            filename = config.depth_path + f"/{prefix}depth.bin"
-            file = open(filename, "wb+")
-            for i in range(depthframe.dataLen):
-                file.write(c_uint8(depthframe.pFrameData[i]))
-
-            file.close()
-            print("depth save ok")
-            if config.collect_point_cloud:
-                ret, pointlist = config.camera.Ps2_ConvertDepthFrameToWorldVector(
-                    depthframe
+                file.close()
+                frametmp = numpy.ctypeslib.as_array(
+                    rgbframe.pFrameData, (1, rgbframe.width * rgbframe.height * 3)
                 )
-                if ret == 0:
+                frametmp.dtype = numpy.uint8
+                frametmp.shape = (rgbframe.height, rgbframe.width, 3)
+                cv2.imwrite(config.rgb_path + f"/{prefix}rgb.png", frametmp)
+                cv2.imwrite(config.rgb_path + f"/{prefix}rgb.jpg", frametmp)
 
-                    filename = config.depth_path + f"/{prefix}point_cloud.txt"
-                    file = open(filename, "w")
+                print("rgb save ok")
 
-                    for i in range(depthframe.width * depthframe.height):
-                        if pointlist[i].z != 0 and pointlist[i].z != 65535:
-                            file.write(
-                                "{0},{1},{2}\n".format(
-                                    pointlist[i].x, pointlist[i].y, pointlist[i].z
+            if config.collect_ir:
+                while not frameready.ir:
+                    print("retrying to get ir frame")
+                    frameready = read_next_frame(config.camera, retries)
+                prefix = get_prefix(config.hostname)
+                time_last = time_curr
+
+                print("getting ir frame")
+                ret, irframe = config.camera.Ps2_GetFrame(PsFrameType.PsIRFrame)
+
+                filename = config.ir_path + f"/{prefix}ir.bin"
+                file = open(filename, "wb+")
+                for i in range(irframe.dataLen):
+                    file.write(c_uint8(irframe.pFrameData[i]))
+
+                file.close()
+
+                print("ir save ok")
+
+            if config.collect_depth:
+                while not frameready.depth:
+                    print("retrying to get depth frame")
+                    frameready = read_next_frame(config.camera, retries)
+                prefix = get_prefix(config.hostname)
+                time_last = time_curr
+
+                print("getting depth frame")
+                ret, depthframe = config.camera.Ps2_GetFrame(PsFrameType.PsDepthFrame)
+
+                filename = config.depth_path + f"/{prefix}depth.bin"
+                file = open(filename, "wb+")
+                for i in range(depthframe.dataLen):
+                    file.write(c_uint8(depthframe.pFrameData[i]))
+
+                file.close()
+                print("depth save ok")
+                if config.collect_point_cloud:
+                    ret, pointlist = config.camera.Ps2_ConvertDepthFrameToWorldVector(
+                        depthframe
+                    )
+                    if ret == 0:
+
+                        filename = config.depth_path + f"/{prefix}point_cloud.txt"
+                        file = open(filename, "w")
+
+                        for i in range(depthframe.width * depthframe.height):
+                            if pointlist[i].z != 0 and pointlist[i].z != 65535:
+                                file.write(
+                                    "{0},{1},{2}\n".format(
+                                        pointlist[i].x, pointlist[i].y, pointlist[i].z
+                                    )
                                 )
-                            )
 
-                    file.close()
-                    print("point cloud save ok")
-                else:
-                    print("Ps2_ConvertDepthFrameToWorldVector failed:", ret)
+                        file.close()
+                        print("point cloud save ok")
+                    else:
+                        print("Ps2_ConvertDepthFrameToWorldVector failed:", ret)
 
-        loops -= 1
-        time_curr = get_current_time()
+            loops -= 1
+            time_curr = get_current_time()
 
 
 def camera_init(camera: str) -> VzenseTofCam:
