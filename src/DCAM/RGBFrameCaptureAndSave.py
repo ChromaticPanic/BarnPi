@@ -111,7 +111,7 @@ def save_frames(config: CaptureModel):
             break
 
 
-def camera_init(camera: str) -> VzenseTofCam | bool:
+def camera_init(camera: str) -> VzenseTofCam:
     camera_count = camera.Ps2_GetDeviceCount()
     retry_count = 20
     while camera_count == 0 and retry_count > 0:
@@ -130,24 +130,24 @@ def camera_init(camera: str) -> VzenseTofCam | bool:
                 print("cam uri:  " + str(info.uri))
         else:
             print(" failed:" + ret)
-            return FALSE
+            exit()
     elif camera_count == 1:
         ret, device_info = camera.Ps2_GetDeviceInfo()
         if ret == 0:
             print("cam uri:" + str(device_info.uri))
         else:
             print(" failed:" + ret)
-        return FALSE
+            exit()
     else:
         print("there are no camera found")
-        return FALSE
+        exit()
 
     if PsConnectStatus.Connected.value != device_info.status:
         print("connect statu:", device_info.status)
         print(
             "Call Ps2_OpenDevice with connect status :", PsConnectStatus.Connected.value
         )
-        return FALSE
+        exit()
     else:
         print("uri: " + str(device_info.uri))
         print("alias: " + str(device_info.alias))
@@ -158,14 +158,14 @@ def camera_init(camera: str) -> VzenseTofCam | bool:
         print("open device successful")
     else:
         print("Ps2_OpenDevice failed: " + str(ret))
-        return FALSE
+        exit()
 
     ret = camera.Ps2_StartStream()
     if ret == 0:
         print("start stream successful")
     else:
         print("Ps2_StartStream failed:", ret)
-        return FALSE
+        exit()
 
     return camera
 
