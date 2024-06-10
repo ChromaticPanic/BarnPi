@@ -79,9 +79,13 @@ def save_frames(config: CaptureModel):
     time_delay = int(config.capture_delay * 1000)  # convert seconds to milliseconds
     time_last = time_curr + time_delay + 1
     retries = 10
+    rgb_saved = FALSE
+    depth_saved = FALSE
+    ir_saved = FALSE
 
     while time_curr - time_last < time_delay and retries > 0:
         time_curr = get_current_time()
+        prefix = config.hostname + "_" + str(time_curr)
 
         ret, frameready = config.camera.Ps2_ReadNextFrame()
         if ret != 0:
@@ -94,7 +98,7 @@ def save_frames(config: CaptureModel):
         if config.collect_rgb or config.collect_depth or config.collect_ir:
             time_last = time_curr
 
-        if config.collect_rgb and frameready.rgb:
+        if config.collect_rgb and (not rgb_saved) and frameready.rgb:
             ret, rgbframe = config.camera.Ps2_GetFrame(PsFrameType.PsRGBFrame)
 
             filename = config.rgb_path + "/rgb.bin"
@@ -110,10 +114,11 @@ def save_frames(config: CaptureModel):
             frametmp.shape = (rgbframe.height, rgbframe.width, 3)
             cv2.imwrite(config.rgb_path + "/rgb.png", frametmp)
             cv2.imwrite(config.rgb_path + "/rgb.jpg", frametmp)
+            rgb_saved = TRUE
 
             print("rgb save ok")
 
-        if config.collect_depth and frameready.depth:
+        if config.collect_depth and (not depth_saved) and frameready.depth:
             ret, depthframe = config.camera.Ps2_GetFrame(PsFrameType.PsDepthFrame)
 
             filename = config.depth_path + "/depth.bin"
@@ -122,10 +127,25 @@ def save_frames(config: CaptureModel):
                 file.write(c_uint8(depthframe.pFrameData[i]))
 
             file.close()
+            ret, pointlist = config.camera.Ps2_ConvertDepthFrameToWorldVector(depthframe)
+            if  ret == 0:
+
+                filename = config.depth_path + "/point.txt"
+                file = open(filename,"w")
+
+                for i in range(depthframe.width*depthframe.height):
+                    if pointlist[i].z!=0 and pointlist[i].z!=65535:
+                        file.write("{0},{1},{2}\n".format(pointlist[i].x,pointlist[i].y,pointlist[i].z))
+
+                file.close()
+                print("point cloud save ok")
+            else:
+                print("Ps2_ConvertDepthFrameToWorldVector failed:",ret)
+            depth_saved = TRUE
 
             print("depth save ok")
 
-        if config.collect_ir and frameready.ir:
+        if config.collect_ir and (not ir_saved) and frameready.ir:
             ret, irframe = config.camera.Ps2_GetFrame(PsFrameType.PsIRFrame)
 
             filename = config.ir_path + "/ir.bin"
@@ -134,11 +154,17 @@ def save_frames(config: CaptureModel):
                 file.write(c_uint8(irframe.pFrameData[i]))
 
             file.close()
+            ir_saved = TRUE
 
             print("ir save ok")
 
-        if run_once:
-            break
+        if config.collect_rgb == rgb_saved and config.collect_depth == depth_saved and config.collect_ir == ir_saved:
+            rgb_saved = FALSE
+            depth_saved = FALSE
+            ir_saved = FALSE
+
+            if run_once:
+                break
             
 
 
