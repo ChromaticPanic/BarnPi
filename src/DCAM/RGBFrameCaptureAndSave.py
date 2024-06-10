@@ -74,6 +74,7 @@ class CaptureModel:
 
 
 def save_frames(config: CaptureModel):
+    run_once = TRUE
     time_curr = get_current_time()  # get current time in milliseconds
     time_delay = int(config.capture_delay * 1000)  # convert seconds to milliseconds
     time_last = time_curr + time_delay + 1
@@ -86,11 +87,14 @@ def save_frames(config: CaptureModel):
         if ret != 0:
             print("Ps2_ReadNextFrame failed:", ret)
             time.sleep(1)
+            print("retries left: ", retries)
             retries -= 1
             continue
 
-        if frameready.rgb:
+        if config.collect_rgb or config.collect_depth or config.collect_ir:
             time_last = time_curr
+
+        if config.collect_rgb and frameready.rgb:
             ret, rgbframe = config.camera.Ps2_GetFrame(PsFrameType.PsRGBFrame)
 
             filename = config.rgb_path + "/rgb.bin"
@@ -107,8 +111,35 @@ def save_frames(config: CaptureModel):
             cv2.imwrite(config.rgb_path + "/rgb.png", frametmp)
             cv2.imwrite(config.rgb_path + "/rgb.jpg", frametmp)
 
-            print("save ok")
+            print("rgb save ok")
+
+        if config.collect_depth and frameready.depth:
+            ret, depthframe = config.camera.Ps2_GetFrame(PsFrameType.PsDepthFrame)
+
+            filename = config.depth_path + "/depth.bin"
+            file = open(filename, "wb+")
+            for i in range(depthframe.dataLen):
+                file.write(c_uint8(depthframe.pFrameData[i]))
+
+            file.close()
+
+            print("depth save ok")
+
+        if config.collect_ir and frameready.ir:
+            ret, irframe = config.camera.Ps2_GetFrame(PsFrameType.PsIRFrame)
+
+            filename = config.ir_path + "/ir.bin"
+            file = open(filename, "wb+")
+            for i in range(irframe.dataLen):
+                file.write(c_uint8(irframe.pFrameData[i]))
+
+            file.close()
+
+            print("ir save ok")
+
+        if run_once:
             break
+            
 
 
 def camera_init(camera: str) -> VzenseTofCam:
