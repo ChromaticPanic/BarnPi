@@ -98,7 +98,7 @@ def save_frames(config: CaptureModel):
             retries -= 1
             continue
 
-        if config.collect_rgb and (config.collect_rgb != rgb_saved) and frameready.rgb:
+        if config.collect_rgb and (bool(config.collect_rgb) != rgb_saved) and frameready.rgb:
             time_last = time_curr
             ret, rgbframe = config.camera.Ps2_GetFrame(PsFrameType.PsRGBFrame)
 
@@ -119,7 +119,7 @@ def save_frames(config: CaptureModel):
 
             print("rgb save ok")
 
-        if config.collect_depth and (config.collect_depth != depth_saved) and frameready.depth:
+        if config.collect_depth and (bool(config.collect_depth) != depth_saved) and frameready.depth:
             time_last = time_curr
             ret, depthframe = config.camera.Ps2_GetFrame(PsFrameType.PsDepthFrame)
 
@@ -147,7 +147,7 @@ def save_frames(config: CaptureModel):
 
             print("depth save ok")
 
-        if config.collect_ir and (config.collect_ir != ir_saved) and frameready.ir:
+        if config.collect_ir and (bool(config.collect_ir) != ir_saved) and frameready.ir:
             time_last = time_curr
             ret, irframe = config.camera.Ps2_GetFrame(PsFrameType.PsIRFrame)
 
