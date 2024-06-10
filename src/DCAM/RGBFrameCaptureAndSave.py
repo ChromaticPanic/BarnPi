@@ -45,7 +45,8 @@ def assert_required_folders(
 def get_current_time():
     return round(
         # dt.now(datetime.UTC).timestamp() * 1000
-        dt.now(tz="America/Winnipeg").timestamp() * 1000
+        dt.now().timestamp()
+        * 1000
     )  # get current time in milliseconds
 
 
@@ -76,11 +77,14 @@ class CaptureModel:
         self.collect_point_cloud = collect_point_cloud
         self.capture_delay = capture_delay
 
+
 def get_time_str():
-    return dt.now(tz="America/Winnipeg").strftime("%Y%m%d_%H%M%S")
+    return dt.now().strftime("%Y%m%d_%H%M%S")
+
 
 def get_prefix(hostname: str) -> str:
     return hostname + "_" + get_time_str() + "_"
+
 
 def read_next_frame(camera: VzenseTofCam, retries: int = 10):
     ret, frameready = camera.Ps2_ReadNextFrame()
@@ -98,9 +102,6 @@ def save_frames(config: CaptureModel):
     time_delay = int(config.capture_delay * 1000)  # convert seconds to milliseconds
     time_last = time_curr + time_delay + 1
     retries = 10
-    # rgb_saved = FALSE
-    # depth_saved = FALSE
-    # ir_saved = FALSE
 
     while time_curr - time_last < time_delay and retries > 0:
         time_curr = get_current_time()
