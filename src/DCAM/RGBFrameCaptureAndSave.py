@@ -133,7 +133,7 @@ def save_frames(config: CaptureModel):
             print("rgb save ok")
 
         if config.collect_depth:
-            if not frameready.depth:
+            while not frameready.depth:
                 frameready = read_next_frame(config.camera, retries)
             # time YYYYMMDD_HHMMSS
             str_time = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
