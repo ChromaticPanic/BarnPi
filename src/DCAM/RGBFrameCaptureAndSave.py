@@ -207,7 +207,7 @@ def main():
     hostname = socket.gethostname()
 
     camera = camera_init(VzenseTofCam())
-    if camera:
+    if isinstance(camera, VzenseTofCam):
         save_frames(CaptureModel(**{
             'camera': camera,
             'hostname': hostname,
