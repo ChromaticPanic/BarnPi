@@ -1,0 +1,11 @@
+# Run a command to reboot the pi
+- hosts: all
+  remote_user: cowmain
+  vars_files:
+    - secrets.txt
+  tasks:
+    - name: reboot
+      become: yes
+      command: shutdown -r now
+      register: result
+    - debug: var=result

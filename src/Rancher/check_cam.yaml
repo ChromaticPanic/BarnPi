@@ -1,0 +1,8 @@
+# Run a command to check cam connectivity
+- hosts: all
+  remote_user: cowmain
+  tasks:
+    - name: Check cam connectivit
+      command: v4l2-ctl --list-devices
+      register: result
+    - debug: var=result
