@@ -1,0 +1,12 @@
+# run tuptime and show results
+- name: Check uptime
+  hosts: all
+  remote_user: cowmain
+  tasks:
+    - name: Run tuptime
+      command: tuptime
+      register: tuptime_output
+
+    - name: Show tuptime output
+      debug:
+        var: tuptime_output.stdout_lines
