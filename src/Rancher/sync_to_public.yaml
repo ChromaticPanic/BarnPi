@@ -1,0 +1,16 @@
+- hosts: 127.0.0.1
+  tasks:
+    - name: Sync the project from the public directory
+      synchronize:
+        src: /home/rancher/Project/
+        dest: /media/Project/
+        archive: no
+        mode: pull
+        delete: no
+    - name: Sync the project to the public directory
+      synchronize:
+        src: /home/rancher/Project/
+        dest: /media/Project/
+        archive: no
+        mode: push
+        delete: no
