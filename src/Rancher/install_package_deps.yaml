@@ -1,0 +1,16 @@
+# Run a command to install dependencies
+- hosts: all
+  remote_user: cowmain
+  vars_files:
+    - secrets.txt
+  tasks:
+    - name: push deb files
+      synchronize:
+        src: /home/rancher/Project/uhubctl_2.5.0-1_arm64.deb
+        dest: /home/cowmain/project/
+        archive: no
+        mode: push
+        delete: no
+    - name: install package dependencies
+      become: yes
+      command: dpkg -i /home/cowmain/project/uhubctl_2.5.0-1_arm64.deb
