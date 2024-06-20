@@ -32,3 +32,5 @@ sudo systemctl enable cattle_startup.service
 reboot
 
 hostname_YYYYMMDD_HHMMSS_channel
+
+sudo netplan try --config-file /etc/netplan/50-cloud-init.yaml
