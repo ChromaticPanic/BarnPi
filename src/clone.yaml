@@ -1,0 +1,11 @@
+- hosts: 127.0.0.1
+  tasks:
+    - name: Clone the project
+      git:
+        repo: git@github.com:ChromaticPanic/BarnPi.git
+        dest: /home/rancher/Project/BarnPi
+        key_file: /home/rancher/.ssh/id_ed25519
+        accept_hostkey: yes
+        version: master
+        clone: yes
+        update: yes
