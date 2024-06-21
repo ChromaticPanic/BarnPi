@@ -37,6 +37,9 @@ As for the requirements, we are mainly looking for:
 - [ ] NAS should have some redundancy for drive failure risks
 - [x] Images will likely be stored in separate folders for each pi. file names will contain the RPI unique identifier, timestamp, and maybe other relevant information like resolution
 
+
+ansible-playbook -i BarnPi/src/Rancher/hosts.yaml check_cam_retry.yaml | tee retry.txt
+
 Previous Work
 tested using vzense, raspbian, rpi in lab , check it out.
 password
