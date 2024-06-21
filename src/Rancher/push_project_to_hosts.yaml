@@ -1,0 +1,10 @@
+- hosts: all
+  remote_user: cowmain
+  tasks:
+    - name: Push the repo to the hosts
+      synchronize:
+        src: /home/rancher/Project/BarnPi
+        dest: /home/cowmain/project/
+        archive: no
+        mode: pull
+        delete: no
