@@ -1,0 +1,22 @@
+# Run a command to power cycli rpi usb 3 hub
+- hosts: all
+  remote_user: cowmain
+  vars_files:
+    - secrets.txt
+  tasks:
+
+    - name: USB Power Off
+      become: yes
+      command: uhubctl -l 2 -a 0
+      register: resultoff
+    - debug: var=resultoff
+
+    - name: sleep
+      pause:
+        seconds: 10
+
+    - name: USB Power On
+      become: yes
+      command: uhubctl -l 2 -a 1
+      register: resulton
+    - debug: var=resulton

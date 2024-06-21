@@ -1,0 +1,72 @@
+# Run a command to check cam connectivity
+- hosts: all
+  remote_user: cowmain
+  vars_files:
+    - secrets.txt
+  tasks:
+    - name: Check cam connectivity 1st try
+      command: v4l2-ctl --list-devices
+      register: result
+      ignore_errors: yes
+    - debug: var=result
+
+    - name: Power Cycle USB 3 Hub down
+      become: yes
+      command: uhubctl -l 2 -a 0 
+      register: resultoffon
+      when: result.stderr.find("Cannot open device /dev/video0") != -1
+    - debug: var=resultoffon
+
+    - name: sleep 10
+      pause:
+        seconds: 10
+
+    - name: Power Cycle USB 3 Hub up
+      become: yes
+      command: uhubctl -l 2 -a 1
+      register: resultoffon
+      when: resultoffon is defined
+    - debug: var=resultoffon
+
+    - name: sleep 5
+      pause:
+        seconds: 5
+
+    - name: ReCheck cam connectivity 2nd try
+      command: v4l2-ctl --list-devices
+      register: result_retry1
+      when: resultoffon is defined
+      ignore_errors: yes
+    - debug: var=result_retry1
+
+    - name: Power Cyclu USB 3 Hub down
+      become: yes
+      command: uhubctl -l 2 -a 0
+      register: resultoffon_retry1
+      when: result_retry1.stderr.find("Cannot open device /dev/video0") != -1
+    - debug: var=resultoffon_retry1
+
+    - name: sleep 10
+      pause:
+        seconds: 10
+
+    - name: Power Cyclu USB 3 Hub up
+      become: yes
+      command: uhubctl -l 2 -a 1
+      register: resultoffon_retry1
+      when: resultoffon_retry1 is defined
+    - debug: var=resultoffon_retry1
+
+    - name: sleep 5
+      pause:
+        seconds: 5
+
+    - name: ReReCheck cam connectivity 3rd try
+      command: v4l2-ctl --list-devices
+      register: result_retry2
+      when: resultoffon_retry1 is defined
+      ignore_errors: yes
+    - debug: var=result_retry2
+
+
+    
