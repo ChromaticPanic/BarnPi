@@ -11,6 +11,17 @@ import os
 import cv2
 import dotenv
 import socket
+import fcntl
+import socket
+import struct
+
+
+def getHwAddr(ifname):
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    info = fcntl.ioctl(
+        s.fileno(), 0x8927, struct.pack("256s", bytes(ifname, "utf-8")[:15])
+    )
+    return ":".join("%02x" % b for b in info[18:24])
 
 
 def validate_save_path(path: str) -> str:
@@ -253,23 +264,23 @@ def camera_init(camera: str) -> VzenseTofCam:
         print("connectStatus: " + str(device_info.status))
 
     ret = camera.Ps2_OpenDevice(device_info.uri)
-    if  ret != 0:  
+    if ret != 0:
         print("Ps2_OpenDevice failed: " + str(ret))
         exit()
 
     ret = camera.Ps2_StartStream()
-    if  ret != 0:  
+    if ret != 0:
         print("Ps2_StartStream failed:", ret)
         exit()
 
     ret = camera.Ps2_SetDataMode(PsDataMode.PsDepthAndIR_15_RGB_30)
-    if  ret != 0:  
-        print("Ps2_SetDataMode failed:",ret)
+    if ret != 0:
+        print("Ps2_SetDataMode failed:", ret)
         exit()
-        
+
     ret = camera.Ps2_SetRGBResolution(PsResolution.PsRGB_Resolution_640_480)
-    if  ret != 0:  
-        print("Ps2_SetRGBResolution failed:",ret)
+    if ret != 0:
+        print("Ps2_SetRGBResolution failed:", ret)
         exit()
 
     return camera
@@ -277,11 +288,11 @@ def camera_init(camera: str) -> VzenseTofCam:
 
 def camera_close(camera: str) -> bool:
     ret = camera.Ps2_StopStream()
-    if  ret != 0:  
+    if ret != 0:
         print("Ps2_StopStream failed: " + str(ret))
 
     ret = camera.Ps2_CloseDevice()
-    if  ret != 0:  
+    if ret != 0:
         print("Ps2_CloseDevice failed: " + str(ret))
 
 
@@ -308,7 +319,8 @@ def main():
     collect_point_cloud = bool(os.getenv("COLLECT_POINT_CLOUD"))
     capture_count = int(os.getenv("CAPTURE_COUNT"))
     rgb_format = os.getenv("RGB_FILE_FORMAT")
-    hostname = socket.gethostname()
+    # hostname = socket.gethostname()
+    hostname = getHwAddr("eth0")
 
     camera = camera_init(VzenseTofCam())
     if isinstance(camera, VzenseTofCam):
