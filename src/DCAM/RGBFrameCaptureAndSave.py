@@ -110,9 +110,12 @@ def save_frames(config: CaptureModel):
             frameready = read_next_frame(config.camera, retries)
 
             if config.collect_rgb:
-                while not frameready.rgb:
+                _retries = 10
+                while not frameready.rgb and _retries > 0:
                     print("retrying to get rgb frame")
                     frameready = read_next_frame(config.camera, retries)
+                    _retries -= 1
+                    time.sleep(0.05)
                 prefix = get_prefix(config.hostname)
                 time_last = time_curr
 
@@ -136,9 +139,12 @@ def save_frames(config: CaptureModel):
                 print("rgb save ok")
 
             if config.collect_ir:
-                while not frameready.ir:
+                _retries = 10
+                while not frameready.ir and _retries > 0:
                     print("retrying to get ir frame")
                     frameready = read_next_frame(config.camera, retries)
+                    _retries -= 1
+                    time.sleep(0.05)
                 prefix = get_prefix(config.hostname)
                 time_last = time_curr
 
@@ -155,9 +161,12 @@ def save_frames(config: CaptureModel):
                 print("ir save ok")
 
             if config.collect_depth:
-                while not frameready.depth:
+                _retries = 10
+                while not frameready.depth and _retries > 0:
                     print("retrying to get depth frame")
                     frameready = read_next_frame(config.camera, retries)
+                    _retries -= 1
+                    time.sleep(0.05)
                 prefix = get_prefix(config.hostname)
                 time_last = time_curr
 

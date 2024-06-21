@@ -22,7 +22,20 @@ As for the requirements, we are mainly looking for:
     Prepare documentation explaining the setup and how to use it for future data collection periods.
 
 
-In this position, you will be paid hourly and you will need to submit weekly timesheets (more information on that to come). Please keep consistent track of the hours you spend working on it.
+- [x] Main computer is in charge of monitoring all the pi's
+- [ ] Main computer is in charge of managing the NAS boxes (which one is active)
+- [ ] Main computer is in charge of initiating file transfers from the pi's to the NAS
+- [ ] Main computer should notify (likely via email) if RPI or camera issues detected
+- [ ] Main computer should notify (likely via email) when NAS is nearing capacity
+- [ ] If the main computer can detect NAS issues then it will also notify for those. (e.g. drive failure needing replacement and resilvering)
+- [ ] Main computer will push any updates of collection interval to the RPIs
+
+- [ ] RPIs will collect images at specified intervals and keep locally until transfers are completed and verified
+- [ ] RPI will report system health to main computer
+
+- [ ] NAS will fill up one system at a time
+- [ ] NAS should have some redundancy for drive failure risks
+- [x] Images will likely be stored in separate folders for each pi. file names will contain the RPI unique identifier, timestamp, and maybe other relevant information like resolution
 
 Previous Work
 tested using vzense, raspbian, rpi in lab , check it out.
