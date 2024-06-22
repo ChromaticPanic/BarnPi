@@ -9,18 +9,9 @@ class VzenseTofCam():
     session = c_uint(0)
     def __init__(self):
         if platform.system() == 'Linux':
-            libpath = (os.path.abspath(os.path.dirname(os.getcwd()) + os.path.sep + "../"))+"/src/DCAM/Lib/libvzense_api.so"
+            libpath = "/home/cowmain/project/BarnPi/src/DCAM/Lib/libvzense_api.so"
             print(libpath)
-            self.ps_cam_lib = cdll.LoadLibrary(libpath)
-        elif platform.system() == 'Windows':          
-            lib_name = "../Lib/"
-            lib_path = os.path.dirname(os.path.abspath(__file__)) + os.path.sep + lib_name
-            lib_path = ';'+lib_path
-            os.environ['path']+= lib_path
-            
-            libpath = (os.path.abspath(os.path.dirname(os.getcwd()) + os.path.sep + "../"))+"Lib/vzense_api.dll"
-            print(libpath)
-            self.ps_cam_lib = cdll.LoadLibrary(libpath)    
+            self.ps_cam_lib = cdll.LoadLibrary(libpath) 
         else:
             print('do not supported OS')
             exit()
