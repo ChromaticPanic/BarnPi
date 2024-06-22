@@ -1,0 +1,7 @@
+# Run a command to clear the ram disk
+- hosts: all
+  remote_user: cowmain
+  gather_facts: yes
+  tasks:
+    - name: Clear RAM disk
+      shell: rm -rf /mnt/ramdisk/data/depth/* /mnt/ramdisk/data/rgb/* /mnt/ramdisk/data/ir/*

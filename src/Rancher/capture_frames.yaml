@@ -1,0 +1,12 @@
+# Run a command to check cam connectivity
+- hosts: all
+  remote_user: cowmain
+  gather_facts: no
+  tasks:
+    - name: Check cam connectivit
+      command: v4l2-ctl --list-devices
+
+    - name: Capture frames
+      command: /home/cowmain/project/BarnPi/src/DCAM/bin/python3 /home/cowmain/project/BarnPi/src/DCAM/capture_and_save.py
+      register: capture_result
+    - debug: var=capture_result

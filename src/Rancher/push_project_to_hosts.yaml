@@ -1,10 +1,14 @@
 - hosts: all
   remote_user: cowmain
+  gather_facts: no
   tasks:
     - name: Push the repo to the hosts
       synchronize:
-        src: /home/rancher/Project/BarnPi
-        dest: /home/cowmain/project/
+        src: /home/rancher/Project/BarnPi/
+        dest: /home/cowmain/project/BarnPi/
         archive: no
-        mode: pull
+        mode: push
         delete: no
+        recursive: yes
+        links: yes
+    

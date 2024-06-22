@@ -1,0 +1,16 @@
+# Run a command to check cam connectivity
+- hosts: all
+  remote_user: cowmain
+  gather_facts: no
+  tasks:
+    - name: Check cam connectivit
+      command: v4l2-ctl --list-devices
+
+    - name: Fetch Captured frames
+      synchronize:
+        src: /home/cowmain/project/BarnPi/ram_data/
+        dest: /home/rancher/Project/data/
+        mode: pull
+        delete: no
+        recursive: yes
+        copy_links: yes
