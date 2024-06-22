@@ -3,9 +3,6 @@
   remote_user: cowmain
   gather_facts: no
   tasks:
-    - name: Check cam connectivit
-      command: v4l2-ctl --list-devices
-
     - name: Fetch Captured frames
       synchronize:
         src: /home/cowmain/project/BarnPi/ram_data/

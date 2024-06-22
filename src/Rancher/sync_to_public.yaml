@@ -8,6 +8,8 @@
         mode: pull
         delete: no
         recursive: yes
+        rsync_opts:
+          - "--exclude=.git/"
     - name: Sync the project to the public directory
       synchronize:
         src: /home/rancher/Project/
@@ -16,3 +18,5 @@
         mode: push
         delete: no
         recursive: yes
+        rsync_opts:
+          - "--exclude=.git/"
