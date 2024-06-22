@@ -297,7 +297,7 @@ def camera_close(camera: str) -> bool:
 
 
 def main():
-    dotenv.load_dotenv("./capture_config.ini")
+    dotenv.load_dotenv("/home/cowmain/project/BarnPi/src/DCAM/capture_config.ini")
     cache_dir = os.getenv("CACHE_DIR")
     local_dir = os.getenv("LOCAL_DIR")
     data_dir = os.getenv("DATA_DIR")
