@@ -9,3 +9,6 @@
         version: master
         clone: yes
         update: yes
+
+    - name: Make executable
+      shell: chmod +x /home/rancher/Project/BarnPi/shell/*.sh

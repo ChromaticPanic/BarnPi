@@ -56,7 +56,7 @@ As for the requirements, we are mainly looking for:
 - [ ] Main computer should notify (likely via email) if RPI or camera issues detected
 - [ ] Main computer should notify (likely via email) when NAS is nearing capacity
 - [ ] If the main computer can detect NAS issues then it will also notify for those. (e.g. drive failure needing replacement and resilvering)
-- [ ] Main computer will push any updates of collection interval to the RPIs
+- [x] Main computer will push any updates of collection interval to the RPIs
 
 - [ ] RPIs will collect images at specified intervals and keep locally until transfers are completed and verified
 - [x] RPI will report system health to main computer
