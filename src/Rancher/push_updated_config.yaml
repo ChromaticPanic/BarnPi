@@ -1,0 +1,9 @@
+- hosts: all
+  remote_user: cowmain
+  gather_facts: no
+  tasks:
+    - name: Push the config file to the hosts
+      copy:
+        src: /home/rancher/Project/BarnPi/src/DCAM/capture_config.ini
+        dest: /home/cowmain/project/BarnPi/src/DCAM/capture_config.ini
+    
