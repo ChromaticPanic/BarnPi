@@ -1,5 +1,11 @@
 # BarnPi
 
+Onboarding
+Step 1: install vscode
+Step 2: Desktop\Projects
+
+
+
 Commands
 
 Shell wrappers
