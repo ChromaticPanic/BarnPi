@@ -1,5 +1,27 @@
 # BarnPi
 
+Commands
+
+time ansible-playbook -i /home/rancher/Project/BarnPi/src/Rancher/hosts.ini /home/rancher/Project/BarnPi/src/Rancher/check_cam.yaml | tee check_cam.txt
+
+time ansible-playbook -i /home/rancher/Project/BarnPi/src/Rancher/hosts.ini /home/rancher/Project/BarnPi/src/Rancher/check_cam_retry.yaml | tee retry.txt
+
+time ansible-playbook -i /home/rancher/Project/BarnPi/src/Rancher/hosts.ini /home/rancher/Project/BarnPi/src/Rancher/fetch_captured_frames.yaml | tee fetch_captured_frames.txt
+
+time ansible-playbook -i /home/rancher/Project/BarnPi/src/Rancher/hosts.ini /home/rancher/Project/BarnPi/src/Rancher/capture_frames.yaml | tee capture_frames.txt
+
+time ansible-playbook -i /home/rancher/Project/BarnPi/src/Rancher/hosts.ini /home/rancher/Project/BarnPi/src/Rancher/clear_ram_disk.yaml | tee clear_ram_disk.txt
+
+time ansible-playbook -i /home/rancher/Project/BarnPi/src/Rancher/hosts.ini /home/rancher/Project/BarnPi/src/Rancher/push_project_to_hosts.yaml | tee push_project_to_hosts.txt
+
+time ansible-playbook -i /home/rancher/Project/BarnPi/src/Rancher/hosts.ini /home/rancher/Project/BarnPi/src/Rancher/reboot_swarm.yaml | tee reboot_swarm.txt
+
+time ansible-playbook -i /home/rancher/Project/BarnPi/src/Rancher/hosts.ini /home/rancher/Project/BarnPi/src/Rancher/sync_to_public.yaml | tee sync_to_public.txt
+
+time ansible-playbook -i /home/rancher/Project/BarnPi/src/Rancher/hosts.ini /home/rancher/Project/BarnPi/src/Rancher/sync_to_nas.yaml | tee sync_to_nas.txt
+
+time ansible-playbook -i /home/rancher/Project/BarnPi/src/Rancher/hosts.ini /home/rancher/Project/BarnPi/src/Rancher/usb_power_cycle.yaml | tee usb_power_cycle.txt
+
 Information
 
 Main switch (24-Port Gigabit GREENnet Switch - TRENDnet TEG-S24g) 
@@ -31,14 +53,18 @@ As for the requirements, we are mainly looking for:
 - [ ] Main computer will push any updates of collection interval to the RPIs
 
 - [ ] RPIs will collect images at specified intervals and keep locally until transfers are completed and verified
-- [ ] RPI will report system health to main computer
+- [x] RPI will report system health to main computer
 
 - [ ] NAS will fill up one system at a time
-- [ ] NAS should have some redundancy for drive failure risks
+- [x] NAS should have some redundancy for drive failure risks
 - [x] Images will likely be stored in separate folders for each pi. file names will contain the RPI unique identifier, timestamp, and maybe other relevant information like resolution
 
+USB length limit for the camera to work is 4 meters
+- tested with 3m extension + 1m camera cable
+- tested with 4.5m extension + 1m camera cable
+- tested with 3m + 4.5m extension + 1m camera cable
+With longer cables the camera light turns on but the camera is not detected by the system. This is a physics issue with digital signals over copper cables. There is a voltage drop over long cables preventing communication.
 
-ansible-playbook -i BarnPi/src/Rancher/hosts.yaml check_cam_retry.yaml | tee retry.txt
 
 Previous Work
 tested using vzense, raspbian, rpi in lab , check it out.
