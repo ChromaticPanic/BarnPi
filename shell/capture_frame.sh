@@ -1,2 +1,2 @@
 #!/bin/bash
-time ansible-playbook -i /home/rancher/Project/BarnPi/src/Rancher/hosts.ini /home/rancher/Project/BarnPi/src/Rancher/capture_frames.yaml | tee capture_frames.txt
+time ansible-playbook -i /home/rancher/Project/BarnPi/src/Rancher/hosts.ini /home/rancher/Project/BarnPi/src/Rancher/capture_frames.yaml | tee /home/rancher/Project/BarnPi/log/capture_frames.txt
