@@ -3,6 +3,8 @@
 Onboarding
 Step 1: install vscode
 Step 2: Desktop\Projects
+Step 3: launch VScode Project
+Step 4: BarnPi/src/DCAM/capture_config.ini
 
 
 
