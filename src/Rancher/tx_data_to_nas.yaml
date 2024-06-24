@@ -1,0 +1,35 @@
+# Run a command to 
+# transfer ram data to nas folder
+# verify transfer
+# clear the ram disk
+- hosts: all
+  remote_user: cowmain
+  gather_facts: no
+  vars_files:
+    - secrets.txt
+    - nas_vars.txt
+  tasks:
+    - name: check if ACTIVE_NAS is mounted
+      shell: mount | grep "/mnt/{{ ACTIVE_NAS }}"
+      register: nas_mounted
+
+    - name: Copy RAM depth data
+      copy:
+        src: /mnt/ramdisk/data/depth/
+        dest: /mnt/{{ ACTIVE_NAS }}/{{ ansible_default_ipv4.macaddress }}/depth/
+      when: nas_mounted.stdout != ""
+
+    - name: Copy RAM rgb data
+      copy:
+        src: /mnt/ramdisk/data/rgb/
+        dest: /mnt/{{ ACTIVE_NAS }}/{{ ansible_default_ipv4.macaddress }}/rgb/
+      when: nas_mounted.stdout != ""
+
+    - name: Copy RAM ir data
+      copy:
+        src: /mnt/ramdisk/data/ir/
+        dest: /mnt/{{ ACTIVE_NAS }}/{{ ansible_default_ipv4.macaddress }}/ir/
+      when: nas_mounted.stdout != ""
+
+    - name: Clear RAM disk
+      shell: rm -rf /mnt/ramdisk/data/depth/* /mnt/ramdisk/data/rgb/* /mnt/ramdisk/data/ir/*

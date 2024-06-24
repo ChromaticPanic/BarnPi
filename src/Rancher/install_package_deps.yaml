@@ -42,6 +42,8 @@
 
     - name: check if deb exists on controller
       stat: path=/home/rancher/Project/uhubctl_2.5.0-1_arm64.deb
+      run_once: true
+      delegate_to: localhost
       register: deb_src
 
     - name: check if deb exists on host

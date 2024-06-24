@@ -1,0 +1,101 @@
+# Run a command to mount nas devices
+- hosts: all
+  remote_user: cowmain
+  vars_files:
+    - secrets.txt
+  tasks:
+    - name: Mount folder Angus exists else create
+      become: yes
+      file:
+        path: /mnt/angus
+        state: directory
+        mode: 0777
+    
+    - name: Mount folder Beefalo exists else create
+      become: yes
+      file:
+        path: /mnt/beefalo
+        state: directory
+        mode: 0777
+
+    - name: mount NAS Angus
+      become: yes
+      mount:
+        src: 192.168.50.10:angus
+        path: /mnt/angus
+        state: mounted
+        fstype: nfs
+      ignore_errors: yes
+      register: mount_angus
+    - debug: var=mount_angus
+
+    - name: mount NAS Beefalo
+      become: yes
+      mount: 
+        src: 192.168.50.20:beefalo
+        path: /mnt/beefalo
+        state: mounted
+        fstype: nfs
+      ignore_errors: yes
+      register: mount_beefalo
+    - debug: var=mount_beefalo
+
+    - name: Make Folder that matches mac address
+      become: yes
+      file:
+        path: /mnt/angus/{{ ansible_default_ipv4.macaddress }}/depth
+        state: directory
+        mode: 0777
+        recurse: yes
+      when: mount_angus is not failed
+
+    - name: Make Folder that matches mac address
+      become: yes
+      file:
+        path: /mnt/angus/{{ ansible_default_ipv4.macaddress }}/ir
+        state: directory
+        mode: 0777
+        recurse: yes
+      when: mount_angus is not failed
+
+
+    - name: Make Folder that matches mac address
+      become: yes
+      file:
+        path: /mnt/angus/{{ ansible_default_ipv4.macaddress }}/rgb
+        state: directory
+        mode: 0777
+        recurse: yes
+      when: mount_angus is not failed
+
+
+    - name: Make Folder that matches mac address
+      become: yes
+      file:
+        path: /mnt/beefalo/{{ ansible_default_ipv4.macaddress }}/depth
+        state: directory
+        mode: 0777
+        recurse: yes
+      when: mount_beefalo is not failed
+
+
+    - name: Make Folder that matches mac address
+      become: yes
+      file:
+        path: /mnt/beefalo/{{ ansible_default_ipv4.macaddress }}/ir
+        state: directory
+        mode: 0777
+        recurse: yes
+      when: mount_beefalo is not failed
+
+    - name: Make Folder that matches mac address
+      become: yes
+      file:
+        path: /mnt/beefalo/{{ ansible_default_ipv4.macaddress }}/rgb
+        state: directory
+        mode: 0777
+        recurse: yes
+      when: mount_beefalo is not failed
+
+
+    
