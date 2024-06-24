@@ -4,6 +4,50 @@
   vars_files:
     - secrets.txt
   tasks:
+    - name: install etckeeper
+      become: yes
+      apt:
+        name: etckeeper
+        state: present
+
+    - name: install tuptime
+      become: yes
+      apt:
+        name: tuptime
+        state: present
+
+    - name: install avahi-daemon
+      become: yes
+      apt:
+        name: avahi-daemon
+        state: present
+
+    - name: install python3.12-venv
+      become: yes
+      apt:
+        name: python3.12-venv
+        state: present
+
+    - name: install v4l-utils
+      become: yes
+      apt:
+        name: v4l-utils
+        state: present
+
+    - name: install nfs-common
+      become: yes
+      apt:
+        name: nfs-common
+        state: present
+
+    - name: check if deb exists on controller
+      stat: path=/home/rancher/Project/uhubctl_2.5.0-1_arm64.deb
+      register: deb_src
+
+    - name: check if deb exists on host
+      stat: path=/home/cowmain/project/uhubctl_2.5.0-1_arm64.deb
+      register: deb_dest
+
     - name: push deb files
       synchronize:
         src: /home/rancher/Project/uhubctl_2.5.0-1_arm64.deb
@@ -11,6 +55,10 @@
         archive: no
         mode: push
         delete: no
-    - name: install package dependencies
+      when: deb_src.stat.exists and not deb_dest.stat.exists
+      register: push_deb
+
+    - name: install package uhubctl
       become: yes
       command: dpkg -i /home/cowmain/project/uhubctl_2.5.0-1_arm64.deb
+      when: push_deb.changed
