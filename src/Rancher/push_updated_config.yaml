@@ -6,4 +6,6 @@
       copy:
         src: /home/rancher/Project/BarnPi/src/DCAM/capture_config.ini
         dest: /home/cowmain/project/BarnPi/src/DCAM/capture_config.ini
+      register: result
+    - debug: var=result
     

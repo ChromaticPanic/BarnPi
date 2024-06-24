@@ -11,4 +11,6 @@
         delete: no
         recursive: yes
         links: yes
+      register: result
+    - debug: var=result
     
