@@ -1,4 +1,13 @@
 # BarnPi
+## Contents
+- [System Overview](#system-overview)
+- [Code Overview](#code-overview)
+  - [DCAM](#dcam)
+  - [Cattle](#cattle)
+  - [Rancher](#rancher)
+- [Main Computer](#main-computer)
+- [Raspberry Pi Computers](#raspberry-pi-computers)
+- [NAS Devices](#nas-devices)
 
 # System Overview
 The BarnPi system is a network of Raspberry Pi computers that are used to capture images from cameras attached to the Raspberry Pi. The images are stored on a network-attached storage (NAS) device for later analysis. The system is designed to be used in a barn environment to monitor the health and behavior of livestock.
@@ -9,14 +18,6 @@ The system consists of three main components:
 - The NAS devices, which stores the images captured by the Raspberry Pi computers.
 
 The main computer sits between 2 networks, the University network and the BarnPi network. The University network is used for remote access to the main computer, while the BarnPi network is used for communication between the main computer, the Raspberry Pi computers, and the pi
-
-# Main Computer
-
-
-# Raspberry Pi Computers
-
-
-# NAS Devices
 
 
 # Code Overview
@@ -30,6 +31,26 @@ The `Cattle` directory contains code needed by the raspberry pi computer OS to f
 
 ## Rancher
 The `Rancher` directory contains code for managing the Raspberry Pi computers and the NAS devices. This includes Ansible playbooks for deploying code to the Raspberry Pi computers, managing the NAS devices, and performing other administrative tasks.
+
+
+# Main Computer
+The main computer is a desktop computer that is used to monitor the Raspberry Pi computers and manage the NAS devices. 
+The main computer runs Windows 10. 
+The main computer has a VirtualBox VM running Ubuntu 24.04 LTS that is used to run the code for the BarnPi system.
+The VM uses Ansible to control the Raspberry Pi computers and perform other administrative tasks.
+
+# Raspberry Pi Computers
+The Raspberry Pi computers are model Raspberry Pi 4 8GB Starter Kit - 32GB/128GB. 
+They are connected to the network via a 1 Gbps Ethernet connection. 
+Each Raspberry Pi computer has a 1GB ramdisk mounted at `/mnt/ramdisk` for temporary storage of captured images.
+The Raspberry Pi computers base image are running ARM64 Ubuntu 24.04 LTS with vzense drivers installed.
+Images are transferred from the Raspberry Pi computers to the NAS devices using the `nc` and `tar` utilities for efficient transfer over the network.
+
+
+# NAS Devices
+The NAS devices Angus and Beefalo are DS920+ Synology NAS devices. 
+They are configured in a 4 disk RAID 5 array to provide redundancy in case of drive failure. This setup will allow for the loss of one disk without losing any data. The NAS devices are connected to the network via a 1 Gbps Ethernet connection.
+Given the disks speed and the RAID 5 configuration, the theoretical max write speed is 1 Gbps. The actual write speed will be lower due to the overhead of the RAID 5 configuration and the network connection.
 
 
 
