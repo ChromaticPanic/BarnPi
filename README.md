@@ -1,12 +1,45 @@
 # BarnPi
 
+# System Overview
+The BarnPi system is a network of Raspberry Pi computers that are used to capture images from cameras attached to the Raspberry Pi. The images are stored on a network-attached storage (NAS) device for later analysis. The system is designed to be used in a barn environment to monitor the health and behavior of livestock.
+
+The system consists of three main components:
+- The main computer, which is responsible for monitoring the Raspberry Pi computers and managing the NAS device.
+- The Raspberry Pi computers, which capture images from the cameras and store them locally until they can be transferred to the NAS device.
+- The NAS devices, which stores the images captured by the Raspberry Pi computers.
+
+The main computer sits between 2 networks, the University network and the BarnPi network. The University network is used for remote access to the main computer, while the BarnPi network is used for communication between the main computer, the Raspberry Pi computers, and the pi
+
+# Main Computer
+
+
+# Raspberry Pi Computers
+
+
+# NAS Devices
+
+
+# Code Overview
+All the code for the BarnPi system is stored in the `src` directory. The code is organized into several subdirectories, each of which contains code for a specific component of the system.
+
+## DCAM
+The `DCAM` directory contains code for capturing images from the cameras attached to the Raspberry Pi computers. The code is written in Python and uses the `vzense` library to interface with the cameras.
+
+## Cattle
+The `Cattle` directory contains code needed by the raspberry pi computer OS to function properly. This includes the startup script and the systemd service file. Which assigns a unique hostname to each Raspberry Pi computer based on its MAC address.
+
+## Rancher
+The `Rancher` directory contains code for managing the Raspberry Pi computers and the NAS devices. This includes Ansible playbooks for deploying code to the Raspberry Pi computers, managing the NAS devices, and performing other administrative tasks.
+
+
+
 Onboarding
 Step 1: install vscode
 Step 2: Desktop\Projects
 Step 3: launch VScode Project
 Step 4: BarnPi/src/DCAM/capture_config.ini
 
-
+tar netcat
 
 Commands
 
@@ -66,11 +99,11 @@ As for the requirements, we are mainly looking for:
 - [ ] If the main computer can detect NAS issues then it will also notify for those. (e.g. drive failure needing replacement and resilvering)
 - [x] Main computer will push any updates of collection interval to the RPIs
 
-- [ ] RPIs will collect images at specified intervals and keep locally until transfers are completed and verified
+- [x] RPIs will collect images at specified intervals and keep locally until transfers are completed and verified
 - [x] RPI will report system health to main computer
 
-- [ ] NAS will fill up one system at a time
-- [x] NAS should have some redundancy for drive failure risks
+- [x] NAS will fill up one system at a time
+- [ ] NAS should have some redundancy for drive failure risks Raid 5 1gbps Raid 10 2gbps
 - [x] Images will likely be stored in separate folders for each pi. file names will contain the RPI unique identifier, timestamp, and maybe other relevant information like resolution
 
 USB length limit for the camera to work is 4 meters
@@ -79,6 +112,20 @@ USB length limit for the camera to work is 4 meters
 - tested with 3m + 4.5m extension + 1m camera cable
 With longer cables the camera light turns on but the camera is not detected by the system. This is a physics issue with digital signals over copper cables. There is a voltage drop over long cables preventing communication.
 
+NAS Config
+animalscienceadmin
+cowmain
+
+Raid 5 BTRFS Theoretical 1gbps write speed
+Port 1 DHCP
+Port 2 Static 192.168.50.10, 192.168.50.20
+
+shared folder /volume1/barndata
+
+home folder /volume1/homes/cowmain
+
+recv /var/packages/DiagnosisTool/target/tool/ncat -l -p 7000 | pv | tar -xpf -
+send tar -cf - * | pv | nc destinationHost 7000
 
 Previous Work
 tested using vzense, raspbian, rpi in lab , check it out.
