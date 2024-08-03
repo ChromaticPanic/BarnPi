@@ -1,13 +1,20 @@
 # BarnPi
 ## Contents
+- [This Repository](#this-repository)
 - [System Overview](#system-overview)
 - [Code Overview](#code-overview)
+  - [Shell](#shell)
+  - [Project](#project)
+  - [Secrets](#secrets)
   - [DCAM](#dcam)
   - [Cattle](#cattle)
   - [Rancher](#rancher)
 - [Main Computer](#main-computer)
 - [Raspberry Pi Computers](#raspberry-pi-computers)
 - [NAS Devices](#nas-devices)
+
+# This Repository
+This repository contains the code for the BarnPi system. The code is organized into several subdirectories, each of which contains code for a specific component of the system. The code is written in Python and uses the `vzense` library to interface with the cameras attached to the Raspberry Pi computers.
 
 # System Overview
 The BarnPi system is a network of Raspberry Pi computers that are used to capture images from cameras attached to the Raspberry Pi. The images are stored on a network-attached storage (NAS) device for later analysis. The system is designed to be used in a barn environment to monitor the health and behavior of livestock.
@@ -23,21 +30,33 @@ The main computer sits between 2 networks, the University network and the BarnPi
 # Code Overview
 All the code for the BarnPi system is stored in the `src` directory. The code is organized into several subdirectories, each of which contains code for a specific component of the system.
 
+## Shell
+The `Shell` directory contains bash scripts that call the Ansible playbooks to perform various administrative tasks on the Raspberry Pi computers and the NAS devices. The scripts are used to automate the deployment of code to the Raspberry Pi computers, manage the NAS devices, and perform all control tasks for the system.
+
+## Project
+The `Desktop/Project` directory contains powershell scripts that can be run on the windows host to call the shell scripts in the virtual machine. This allows a user to simply double click some shortcuts to perform common tasks.
+
+## Secrets
+Credentials and secrets are stored in OneDrive. The secrets are stored outside of this repository for security reasons. 
+
 ## DCAM
-The `DCAM` directory contains code for capturing images from the cameras attached to the Raspberry Pi computers. The code is written in Python and uses the `vzense` library to interface with the cameras.
+The `src/DCAM` directory contains code for capturing images from the cameras attached to the Raspberry Pi computers. The code is written in Python and uses the `vzense` library to interface with the cameras. This folder also contains the necessary dependencies from the vzense repository to interface with the cameras. The dependencies have been modified as needed to work with the BarnPi system.
 
 ## Cattle
-The `Cattle` directory contains code needed by the raspberry pi computer OS to function properly. This includes the startup script and the systemd service file. Which assigns a unique hostname to each Raspberry Pi computer based on its MAC address.
+The `src/Cattle` directory contains code needed by the raspberry pi computer OS to function properly. This includes the startup script and the systemd service file. Which assigns a unique hostname to each Raspberry Pi computer based on its MAC address.
 
 ## Rancher
-The `Rancher` directory contains code for managing the Raspberry Pi computers and the NAS devices. This includes Ansible playbooks for deploying code to the Raspberry Pi computers, managing the NAS devices, and performing other administrative tasks.
+The `src/Rancher` directory contains code for managing the Raspberry Pi computers and the NAS devices. This includes Ansible playbooks for deploying code to the Raspberry Pi computers, managing the NAS devices, and performing other administrative tasks. These scripts are meant to be run from the main computer to control the Raspberry Pi computers and the NAS devices.
 
+## vzense
+The `vzenze` directory contains a copy of the reference vzense repositories used in the project.
 
 # Main Computer
 The main computer is a desktop computer that is used to monitor the Raspberry Pi computers and manage the NAS devices. 
 The main computer runs Windows 10. 
 The main computer has a VirtualBox VM running Ubuntu 24.04 LTS that is used to run the code for the BarnPi system.
 The VM uses Ansible to control the Raspberry Pi computers and perform other administrative tasks.
+[Ansible](https://www.ansible.com/) is an open-source automation tool that allows you to automate software provisioning, configuration management, and application deployment.
 
 # Raspberry Pi Computers
 The Raspberry Pi computers are model Raspberry Pi 4 8GB Starter Kit - 32GB/128GB. 
