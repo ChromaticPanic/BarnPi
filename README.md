@@ -156,7 +156,29 @@ cd shell
 
 From the host OS the shell commands can be run by double clicking the shortcuts in the Desktop/Project directory.  
   
-  
+Send command to all Raspberry Pi computers to capture a frame.  
+VM capture frame.lnk  
+
+Send command to all Raspberry Pi computers to check the camera.
+VM check_cam.lnk
+
+Send command to all Raspberry Pi computers to clear the ram disk.
+VM clear ram disk.lnk
+
+Send command to all Raspberry Pi computers to fetch captured frames.
+VM fetch captured frames.lnk
+
+Send command to push the config file to all Raspberry Pi computers.
+VM push config.lnk
+
+Send command to push the project to all Raspberry Pi computers.
+VM push project to hosts.lnk
+
+Send command to reboot the swarm.
+VM reboot swarm.lnk
+
+
+
   
   
 tar netcat
