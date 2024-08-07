@@ -119,6 +119,17 @@ src/DCAM/capture_and_save.py
 see [capture_and_save.py](src/DCAM/capture_and_save.py)
 
 
+# ToDo List
+- [ ] netcat transfer script
+- [ ] netcat receive script
+- [ ] netcat sync service
+- [ ] ansible playbook to call netcat
+- [ ] service on main computer to check vm alive
+- [ ] service on main computer to check pi alive
+- [ ] service on main computer to check nas alive
+- [ ] service on main computer to check nas free space
+
+
 # Operations
 
 ## Updating capture settings  
@@ -134,16 +145,20 @@ Step 2: edit BarnPi/src/DCAM/capture_and_save.py
 Step 3: Save the file  
 Step 4: In Desktop/Project run the "VM push project to hosts" shortcut script  
 
-# ToDo List
-- [ ] netcat transfer script
-- [ ] netcat receive script
-- [ ] netcat sync service
-- [ ] ansible playbook to call netcat
-- [ ] service on main computer to check vm alive
-- [ ] service on main computer to check pi alive
-- [ ] service on main computer to check nas alive
-- [ ] service on main computer to check nas free space
+## Ansible Scripts
+All ansible scripts are run from the virtual machine. The scripts are located in the src/Rancher directory.  
+These encode sequences of commands to be run on the Raspberry Pi computers and the NAS devices.  
+Each script can be run in bash or by executing the shell scripts in the shell directory.  
+```bash
+cd shell
+./capture_frame.sh
+```
 
+From the host OS the shell commands can be run by double clicking the shortcuts in the Desktop/Project directory.  
+  
+  
+  
+  
 tar netcat
 
 Commands
