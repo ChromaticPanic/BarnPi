@@ -12,6 +12,13 @@
 - [Main Computer](#main-computer)
 - [Raspberry Pi Computers](#raspberry-pi-computers)
 - [NAS Devices](#nas-devices)
+- [Data Collection](#data-collection)
+  - [Camera Config](#camera-config)
+  - [Capture Script](#capture-script)
+- [Operations](#operations)
+  - [Updating capture settings](#updating-capture-settings)
+  - [Updating capture_and_save.py](#updating-capture_and_savepy)
+- [ToDo List](#todo-list)
 
 # This Repository
 This repository contains the code for the BarnPi system. The code is organized into several subdirectories, each of which contains code for a specific component of the system. The code is written in Python and uses the `vzense` library to interface with the cameras attached to the Raspberry Pi computers.
@@ -71,13 +78,71 @@ The NAS devices Angus and Beefalo are DS920+ Synology NAS devices.
 They are configured in a 4 disk RAID 5 array to provide redundancy in case of drive failure. This setup will allow for the loss of one disk without losing any data. The NAS devices are connected to the network via a 1 Gbps Ethernet connection.
 Given the disks speed and the RAID 5 configuration, the theoretical max write speed is 1 Gbps. The actual write speed will be lower due to the overhead of the RAID 5 configuration and the network connection.
 
+# Data Collection
+## Camera Config
+
+src/DCAM/capture_config.ini
+
+```ini
+# Directories on the pi for data storage
+CACHE_DIR="/mnt/ramdisk"
+LOCAL_DIR="/home/cowmain/project"
+DATA_DIR="data"
+LOG_DIR="log"
+RGB_DIR="rgb"
+DEPTH_DIR="depth"
+IR_DIR="ir"
+
+# Camera settings
+
+# Interval in seconds between image transfers to NAS
+LOCAL_SYNC_DELAY=600
+
+# Number of images to capture, -1 for infinite
+CAPTURE_COUNT=1
+
+# Delay in seconds between image captures
+CAPTURE_DELAY_SECONDS=60
+
+# Data types to collect (1 for yes, 0 for no)
+COLLECT_DEPTH=1
+COLLECT_POINT_CLOUD=1
+COLLECT_IR=1
+COLLECT_RGB=1
+RGB_FILE_FORMAT="png" # jpg or png
+
+```
+
+## Capture Script
+src/DCAM/capture_and_save.py
+
+see [capture_and_save.py](src/DCAM/capture_and_save.py)
 
 
-Onboarding
-Step 1: install vscode
-Step 2: Desktop\Projects
-Step 3: launch VScode Project
-Step 4: BarnPi/src/DCAM/capture_config.ini
+# Operations
+
+## Updating capture settings  
+Step 1: Use VScode to connect to the virtual machine  
+Step 2: edit BarnPi/src/DCAM/capture_config.ini  
+Step 3: Save the file  
+Step 4: In Desktop/Project run the "VM push config" shortcut script  
+Step 5: In Desktop/Project run the "VM capture frame" shortcut script  
+
+## Updating capture_and_save.py  
+Step 1: Use VScode to connect to the virtual machine  
+Step 2: edit BarnPi/src/DCAM/capture_and_save.py  
+Step 3: Save the file  
+Step 4: In Desktop/Project run the "VM push project to hosts" shortcut script  
+
+# ToDo List
+- [ ] netcat transfer script
+- [ ] netcat receive script
+- [ ] netcat sync service
+- [ ] ansible playbook to call netcat
+- [ ] service on main computer to check vm alive
+- [ ] service on main computer to check pi alive
+- [ ] service on main computer to check nas alive
+- [ ] service on main computer to check nas free space
 
 tar netcat
 
@@ -85,7 +150,8 @@ Commands
 
 Shell wrappers
 
-Ansible
+Ansible  
+  
 time ansible-playbook -i /home/rancher/Project/BarnPi/src/Rancher/hosts.ini /home/rancher/Project/BarnPi/src/Rancher/check_cam.yaml | tee /home/rancher/Project/BarnPi/log/check_cam.txt
 
 time ansible-playbook -i /home/rancher/Project/BarnPi/src/Rancher/hosts.ini /home/rancher/Project/BarnPi/src/Rancher/check_cam_retry.yaml | tee /home/rancher/Project/BarnPi/log/retry.txt
@@ -143,7 +209,7 @@ As for the requirements, we are mainly looking for:
 - [x] RPI will report system health to main computer
 
 - [x] NAS will fill up one system at a time
-- [ ] NAS should have some redundancy for drive failure risks Raid 5 1gbps Raid 10 2gbps
+- [x] NAS should have some redundancy for drive failure risks Raid 5 1gbps Raid 10 2gbps
 - [x] Images will likely be stored in separate folders for each pi. file names will contain the RPI unique identifier, timestamp, and maybe other relevant information like resolution
 
 USB length limit for the camera to work is 4 meters
