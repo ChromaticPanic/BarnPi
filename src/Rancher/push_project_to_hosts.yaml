@@ -11,6 +11,10 @@
         delete: no
         recursive: yes
         links: yes
+        rsync_opts:
+          - "--no-motd"
+          - "--exclude=.git"
+
       register: result
     - debug: var=result
     
