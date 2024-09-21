@@ -134,7 +134,7 @@ def save_frames(config: CaptureModel):
                     time.sleep(0.05)
                 if not frameready.rgb:
                     print("rgb frame not ready")
-                    continue
+                    break
                 prefix = get_prefix(config.hostname)
                 time_last = time_curr
 
@@ -165,7 +165,7 @@ def save_frames(config: CaptureModel):
                     time.sleep(0.05)
                 if not frameready.ir:
                     print("ir frame not ready")
-                    continue
+                    break
                 prefix = get_prefix(config.hostname)
                 time_last = time_curr
 
@@ -210,7 +210,7 @@ def save_frames(config: CaptureModel):
                     time.sleep(0.05)
                 if not frameready.depth:
                     print("depth frame not ready")
-                    continue
+                    break
                 prefix = get_prefix(config.hostname)
                 time_last = time_curr
 
